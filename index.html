@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>LiteBrowser - 极致轻量的Chromium浏览器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Helvetica Neue', Roboto, Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2d3d;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05), 0 1px 4px rgba(0,0,0,0.02);
+            padding: 0 5%;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e6f3f, #107c3e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links a {
+            margin-left: 32px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #21a366;
+        }
+
+        .download-btn-nav {
+            background: #21a366;
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 100px;
+            background: linear-gradient(135deg, #e9f5ef 0%, #d4e6df 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+        }
+
+        .hero-badge {
+            background: rgba(33, 163, 102, 0.15);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 60px;
+            color: #107c3e;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h0 {
+            font-size: 4.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(145deg, #1a3a2b, #107c3e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(145deg, #1a3a2b, #107c3e);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero-sub {
+            font-size: 1.3rem;
+            color: #2c5e43;
+            max-width: 750px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #21a366;
+            color: white;
+            border: none;
+            padding: 16px 42px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(33,163,102,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background: #107c3e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(33,163,102,0.4);
+        }
+
+        .btn-primary .size-badge-inline {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .section {
+            max-width: 1280px;
+            margin: 80px auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            text-align: center;
+            color: #5a6e7c;
+            margin-bottom: 48px;
+            font-size: 1.1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px 24px;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+            border: 1px solid #ecf3f0;
+            transition: all 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #cfe6dd;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: #5a6e7c;
+            line-height: 1.5;
+        }
+
+        .footer {
+            background: #0e2a1f;
+            color: #cbdcd3;
+            padding: 50px 24px 30px;
+            text-align: center;
+            margin-top: 80px;
+            border-radius: 40px 40px 0 0;
+        }
+
+        .footer a {
+            color: #bde3cf;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .kernel-note {
+            font-size: 0.75rem;
+            color: #8aa39a;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 760px) {
+            .hero h1 { font-size: 2.3rem; }
+            .navbar { padding: 0 20px; }
+            .nav-links a { margin-left: 16px; font-size: 14px; }
+            .btn-primary { padding: 12px 24px; font-size: 1rem; }
+            .btn-primary .size-badge-inline { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo-area">
+        LiteBrowser
+    </div>
+    <div class="nav-links">
+        <a href="#">首页</a>
+        <a href="#features">特性</a>
+        <a href="https://1855238337.share.123865.com/123pan/j4gCvd-1X55?pwd=lite#" class="download-btn-nav" download>立即下载</a>
+    </div>
+</nav>
+
+<header class="hero">
+    <div>
+    <h0>LiteBrowser</h0>
+    <h1>比羽毛更轻的身材，比纸片更薄的依赖</h1>
+    <div class="hero-sub">Chromium 140 内核 · 安全上网 · 极致内存优化</div>
+
+    <div class="cta-group">
+    <a href="https://1855238337.share.123865.com/123pan/j4gCvd-1X55?pwd=lite#" class="btn-primary" download>
+        立即下载
+        <span class="size-badge-inline">189 MB · 双击即用</span>
+    </a>
+    </div>
+    <p style="margin-top: 28px; font-size: 14px; color: #2f6b4b;">无广告 · 无新闻弹窗 · 无强制升级 · 不收集隐私</p>
+    <div class="kernel-note">支持 Windows 8 / 8.1 / 10 / 11 · LiteBrowser最新版</div>
+</header>
+
+<div class="section" id="features">
+    <div class="section-title">专为极速与省心而生</div>
+    <div class="section-desc">别人用 2G 实现的功能，我用 189MB 重新定义</div>
+    <div class="grid-3">
+        <div class="card">
+            <div class="card-icon">📦</div>
+            <h3>完美兼容性</h3>
+            <p>基于 Chromium 140 内核，完美兼容现代网页。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">💾</div>
+            <h3>189 MB 轻装出击</h3>
+            <p>完整 Chromium 浏览器仅 189 MB，比传统浏览器小至少 5 倍。U盘、PE、老电脑，随处可用。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🛌</div>
+            <h3>标签页自动休眠</h3>
+            <p>后台标签页可配置自动冻结，45 个 Bing 标签页仅占用约 800M 内存 —— 比其他浏览器省 100% 以上。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🌙</div>
+            <h3>全局暗色主题</h3>
+            <p>一键深色模式，网页、设置、对话框全部跟随，护眼且酷炫。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🛠️</div>
+            <h3>完整开发者工具</h3>
+            <p>F12 / Ctrl+Shift+I 开启 开发者工具，调试、抓包、性能分析完整保留，开发者的最佳伴侣。</p>
+        </div>
+        <div class="card">
+            <div class="card-icon">🍃</div>
+            <h3>零广告 · 零推送</h3>
+            <p>没有弹窗，没有右下角新闻，没有后台商城，没有遥测上传。浏览器只做浏览器的事。</p>
+        </div>
+    </div>
+</div>
+
+<p style="text-align:center; font-size: 0.8rem; color: #8aa39a;">*内存数据基于 8GB 内存电脑实测，不同配置可能有差异。</p>
+
+<div class="section" style="background: #eef3f0; border-radius: 40px; padding: 40px 24px;">
+    <div style="text-align: center; max-width: 780px; margin: 0 auto;">
+        <div style="font-size: 2.5rem;">🚀</div>
+        <p>LiteBrowser 将“零残留、极致启动、内存控制”做到极致，同时不影响用户体验，让每一次点击都干脆利落，让每一兆内存都用在刀刃上。</p>
+        <p style="margin-top: 16px;"><strong>没有后台驻留，没有多余进程，只有纯粹的网页浏览。</strong></p>
+    </div>
+</div>
+
+<div class="footer">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 8px;">LiteBrowser</div>
+        <p style="margin-bottom: 20px;">© 2026 爱玩批处理的cmd 保留所有权利。<br>基于 QtWebEngine 与 Chromium 开源项目，致敬自由软件精神。</p>
+        <p style="font-size: 0.8rem;">本软件为自制免费软件，无病毒无广告，不收集任何用户数据。部分地区杀毒软件可能误报，请放心添加信任。</p>
+        <p style="margin-top: 24px;">
+            <a href="https://space.bilibili.com/3546962242570935">关于我</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="#">用户协议</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="https://14-y2014.github.io/my-download-site">个人网站</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+            <a href="https://space.bilibili.com/3546962242570935">B站 @爱玩批处理的cmd</a>
+        </p>
+        <p style="margin-top: 24px; font-size: 0.7rem;">“别人问我为什么浏览器这么轻，我说因为没用那一亿行广告代码。”</p>
+    </div>
+</div>
+
+</body>
+</html>
