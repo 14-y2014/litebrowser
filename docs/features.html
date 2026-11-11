@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>LiteBrowser · 功能与快捷键</title>
+<style>
+  :root {
+    --bg: #070b14;
+    --panel: rgba(16, 24, 42, 0.66);
+    --panel-strong: rgba(20, 31, 55, 0.9);
+    --line: rgba(129, 166, 255, 0.16);
+    --text: #eaf0ff;
+    --muted: #9ba9c5;
+    --accent: #5b8cff;
+    --cyan: #4fd8ff;
+    --violet: #9b7bff;
+    --green: #5ee2b3;
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(1000px 620px at 16% -8%, rgba(55, 98, 255, 0.28), transparent 62%),
+      radial-gradient(900px 680px at 92% 14%, rgba(79, 216, 255, 0.13), transparent 58%),
+      radial-gradient(800px 620px at 50% 100%, rgba(155, 123, 255, 0.12), transparent 64%),
+      var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(109, 146, 230, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(109, 146, 230, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), transparent 85%);
+  }
+
+  #stars {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .orb {
+    position: fixed;
+    z-index: 0;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .36;
+    pointer-events: none;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  .orb.one { background: #2557ff; top: -120px; left: -80px; }
+  .orb.two { background: #0bb9d6; right: -120px; top: 30%; animation-delay: -7s; }
+  .orb.three { background: #7b4dff; left: 38%; bottom: -180px; animation-delay: -12s; }
+
+  @keyframes drift {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    100% { transform: translate3d(40px, 50px, 0) scale(1.16); }
+  }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    z-index: 50;
+    background: linear-gradient(90deg, var(--accent), var(--cyan), var(--violet));
+    box-shadow: 0 0 14px rgba(91, 140, 255, .9);
+  }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px clamp(18px, 4vw, 64px);
+    backdrop-filter: blur(18px);
+    background: linear-gradient(to bottom, rgba(7, 11, 20, .8), rgba(7, 11, 20, 0));
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: .2px;
+  }
+
+  .brand-mark {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #5b8cff, #7b4dff);
+    box-shadow: 0 0 24px rgba(91, 140, 255, .55);
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
+  }
+
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border: 1px solid rgba(120, 164, 255, .42);
+    border-radius: 50%;
+    transform: rotate(-24deg) scaleY(.48);
+    animation: ring 7s linear infinite;
+  }
+
+  @keyframes ring { to { transform: rotate(336deg) scaleY(.48); } }
+
+  .nav-pill {
+    font-size: 11px;
+    color: #b8c9ee;
+    border: 1px solid var(--line);
+    background: rgba(17, 27, 48, .66);
+    border-radius: 999px;
+    padding: 7px 12px;
+    letter-spacing: .08em;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+
+  /* ---------------- Hero ---------------- */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 110px 0 70px;
+    text-align: center;
+  }
+
+  .hero-inner { position: relative; width: 100%; }
+
+  .logo-stage {
+    position: relative;
+    width: 168px;
+    height: 168px;
+    margin: 0 auto 28px;
+    display: grid;
+    place-items: center;
+  }
+
+  .logo-glow {
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(91,140,255,.5), transparent 66%);
+    filter: blur(18px);
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(.9); opacity: .65; }
+    50% { transform: scale(1.14); opacity: 1; }
+  }
+
+  .logo-ring {
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(126, 165, 255, .38);
+    border-radius: 50%;
+    transform: rotate(-28deg) scaleY(.42);
+    animation: orbitRing 9s linear infinite;
+  }
+  .logo-ring.r2 {
+    inset: -6px;
+    transform: rotate(52deg) scaleY(.5);
+    border-color: rgba(79, 216, 255, .25);
+    animation-duration: 13s;
+    animation-direction: reverse;
+  }
+
+  @keyframes orbitRing { to { transform: rotate(332deg) scaleY(.42); } }
+
+  .logo-core {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 22%, rgba(255,255,255,.5), transparent 23%),
+      linear-gradient(145deg, #5b8cff, #315bdb 56%, #6b47ff);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.18) inset,
+      0 18px 60px rgba(48, 91, 219, .42);
+    font-size: 58px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -3px;
+    animation: logoFloat 5s ease-in-out infinite;
+  }
+
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .orbit-dot {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #8fe9ff;
+    box-shadow: 0 0 16px #4fd8ff;
+    animation: dot 5s ease-in-out infinite;
+  }
+  .orbit-dot.a { top: 18px; right: 24px; }
+  .orbit-dot.b { bottom: 24px; left: 20px; animation-delay: -2.2s; background: #b9a6ff; box-shadow: 0 0 16px #9b7bff; }
+
+  @keyframes dot {
+    0%, 100% { transform: translateY(0) scale(1); opacity: .7; }
+    50% { transform: translateY(-8px) scale(1.35); opacity: 1; }
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(42px, 7.2vw, 92px);
+    line-height: .98;
+    letter-spacing: -.055em;
+    font-weight: 800;
+    background: linear-gradient(110deg, #ffffff 18%, #a8c4ff 48%, #71e7ff 76%, #c1a9ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 12px 36px rgba(76, 130, 255, .22));
+  }
+
+  .hero h1 span {
+    display: block;
+    font-size: .32em;
+    letter-spacing: .26em;
+    font-weight: 600;
+    margin-top: 16px;
+    color: #9bb6ea;
+    background: none;
+    -webkit-text-fill-color: #9bb6ea;
+  }
+
+  .hero p {
+    max-width: 620px;
+    margin: 25px auto 0;
+    color: var(--muted);
+    font-size: clamp(13px, 1.5vw, 16px);
+    line-height: 1.9;
+  }
+
+  .hero-actions {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 20px;
+    border: 1px solid rgba(130, 166, 255, .24);
+    border-radius: 999px;
+    color: var(--text);
+    background: rgba(20, 31, 55, .66);
+    text-decoration: none;
+    font-size: 13px;
+    transition: transform .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .btn:hover { transform: translateY(-3px); border-color: rgba(130, 166, 255, .56); background: rgba(29, 44, 78, .85); }
+  .btn.primary {
+    background: linear-gradient(120deg, #3c6cf0, #5b8cff);
+    border-color: transparent;
+    box-shadow: 0 12px 32px rgba(52, 104, 240, .32);
+  }
+  .btn.primary:hover { box-shadow: 0 16px 40px rgba(52, 104, 240, .46); }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: clamp(18px, 5vw, 54px);
+    margin-top: 42px;
+    color: #8091b2;
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .hero-stats strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #eaf0ff;
+    font-size: clamp(20px, 3vw, 30px);
+    letter-spacing: -.03em;
+  }
+
+  .hero-chips {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border: 1px solid rgba(121, 159, 255, .18);
+    border-radius: 999px;
+    background: rgba(13, 22, 40, .64);
+    color: #9fb4db;
+    font-size: 11px;
+    backdrop-filter: blur(10px);
+    animation: float 7s ease-in-out infinite;
+  }
+  .chip i { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  .chip.c1 { top: 20%; left: 3%; animation-delay: -1s; }
+  .chip.c2 { top: 67%; left: 7%; animation-delay: -3.5s; }
+  .chip.c3 { top: 18%; right: 4%; animation-delay: -2s; }
+  .chip.c4 { top: 70%; right: 6%; animation-delay: -5s; }
+  .chip.c5 { top: 43%; left: 0; animation-delay: -4s; }
+  .chip.c6 { top: 45%; right: 0; animation-delay: -6s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); opacity: .55; }
+    50% { transform: translateY(-12px); opacity: 1; }
+  }
+
+  .scroll-cue {
+    margin-top: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    color: #7183a7;
+    font-size: 10px;
+    letter-spacing: .18em;
+  }
+  .scroll-cue .mouse {
+    width: 20px;
+    height: 30px;
+    border: 1px solid rgba(150, 181, 255, .4);
+    border-radius: 12px;
+    position: relative;
+  }
+  .scroll-cue .mouse::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    width: 3px;
+    height: 7px;
+    border-radius: 3px;
+    transform: translateX(-50%);
+    background: #8aa9e8;
+    animation: wheel 1.8s ease-in-out infinite;
+  }
+  @keyframes wheel {
+    0% { transform: translate(-50%, 0); opacity: 1; }
+    70% { transform: translate(-50%, 9px); opacity: 0; }
+    100% { transform: translate(-50%, 0); opacity: 0; }
+  }
+
+  /* ---------------- Marquee ---------------- */
+  .ticker {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    padding: 18px 0;
+    border-top: 1px solid rgba(112, 149, 232, .1);
+    border-bottom: 1px solid rgba(112, 149, 232, .1);
+    background: rgba(9, 15, 27, .52);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    gap: 14px;
+    animation: ticker 38s linear infinite;
+  }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  .ticker-item {
+    white-space: nowrap;
+    font-size: 11px;
+    color: #8ea4cb;
+    padding: 6px 12px;
+    border: 1px solid rgba(116, 151, 235, .14);
+    border-radius: 999px;
+    letter-spacing: .04em;
+  }
+  .ticker-item b { color: #cfe0ff; font-weight: 600; }
+  @keyframes ticker { to { transform: translateX(-50%); } }
+
+  /* ---------------- Sections ---------------- */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: clamp(70px, 10vw, 116px) 0 0;
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    margin-bottom: 30px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    color: #6fa8ff;
+    font-size: 10px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--cyan), transparent);
+  }
+
+  .section h2 {
+    margin: 0;
+    font-size: clamp(28px, 4.4vw, 50px);
+    letter-spacing: -.045em;
+    line-height: 1.1;
+  }
+  .section-head p {
+    margin: 0 0 6px;
+    max-width: 360px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    position: relative;
+    overflow: hidden;
+    min-height: 196px;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(150deg, rgba(22, 34, 60, .78), rgba(12, 20, 36, .56));
+    backdrop-filter: blur(14px);
+    transition:
+      transform .45s cubic-bezier(.2, .8, .2, 1),
+      border-color .35s ease,
+      background .35s ease;
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .card.show { opacity: 1; transform: translateY(0); }
+  .card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(112, 158, 255, .48);
+    background: linear-gradient(150deg, rgba(30, 47, 82, .9), rgba(13, 22, 40, .72));
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    left: -30%;
+    top: -80%;
+    width: 70%;
+    height: 220%;
+    background: linear-gradient(90deg, transparent, rgba(155, 190, 255, .075), transparent);
+    transform: rotate(18deg);
+    transition: left .7s ease;
+    pointer-events: none;
+  }
+  .card:hover::after { left: 110%; }
+
+  .icon-box {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    color: #9bc6ff;
+    border: 1px solid rgba(116, 159, 255, .2);
+    background: linear-gradient(145deg, rgba(74, 117, 226, .2), rgba(40, 70, 140, .1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    margin-bottom: 18px;
+  }
+  .icon { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  .card h3 {
+    margin: 0 0 9px;
+    font-size: 16px;
+    letter-spacing: -.01em;
+  }
+  .card p {
+    margin: 0;
+    color: #93a4c4;
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 15px;
+  }
+  .tag {
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(91, 140, 255, .08);
+    border: 1px solid rgba(91, 140, 255, .13);
+    color: #8fa8d6;
+    font-size: 10px;
+    letter-spacing: .02em;
+  }
+
+  /* ---------------- Shortcuts ---------------- */
+  .shortcut-layout {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 14px;
+    margin-top: 8px;
+  }
+
+  .shortcut-panel {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(150deg, rgba(20, 32, 57, .8), rgba(9, 16, 30, .65));
+    padding: 24px;
+    backdrop-filter: blur(14px);
+  }
+
+  .shortcut-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(119, 153, 235, .12);
+  }
+  .shortcut-title h3 { margin: 0; font-size: 14px; letter-spacing: .02em; }
+  .shortcut-title span { color: #6f82a7; font-size: 10px; letter-spacing: .12em; }
+
+  .shortcut-list { display: grid; gap: 2px; }
+
+  .shortcut {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 45px;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(119, 153, 235, .075);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+  .shortcut:last-child { border-bottom: 0; }
+  .shortcut.show { opacity: 1; transform: translateX(0); }
+  .shortcut:hover .keys kbd { border-color: rgba(126, 166, 255, .55); color: #eaf2ff; background: rgba(38, 56, 96, .9); }
+
+  .shortcut span.label { color: #a8b7d4; font-size: 12px; line-height: 1.5; }
+
+  .keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+  }
+  kbd {
+    min-width: 25px;
+    min-height: 25px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0 7px;
+    border: 1px solid rgba(135, 167, 238, .24);
+    border-bottom-color: rgba(135, 167, 238, .4);
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(37, 55, 92, .9), rgba(18, 29, 52, .9));
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .08);
+    color: #bcd0f3;
+    font: 600 10px/1 "Segoe UI", "Microsoft YaHei", sans-serif;
+    white-space: nowrap;
+    transition: all .2s ease;
+  }
+  .plus { color: #566987; font-size: 10px; }
+
+  .mouse-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+  }
+  .mouse-visual {
+    position: relative;
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 16px;
+    background:
+      radial-gradient(420px 180px at 50% 110%, rgba(79, 216, 255, .12), transparent 70%),
+      repeating-linear-gradient(0deg, transparent 0 23px, rgba(115, 153, 236, .055) 23px 24px),
+      repeating-linear-gradient(90deg, transparent 0 23px, rgba(115, 153, 236, .055) 23px 24px);
+    border: 1px solid rgba(116, 151, 235, .1);
+  }
+  .mouse-body {
+    position: relative;
+    width: 66px;
+    height: 102px;
+    border: 1.5px solid rgba(159, 190, 255, .55);
+    border-radius: 34px;
+    background: linear-gradient(180deg, rgba(51, 76, 126, .5), rgba(13, 23, 42, .7));
+    box-shadow: 0 0 40px rgba(83, 135, 255, .16);
+  }
+  .mouse-body::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 42px;
+    background: rgba(159, 190, 255, .26);
+  }
+  .mouse-body::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 15px;
+    width: 9px;
+    height: 16px;
+    border-radius: 6px;
+    transform: translateX(-50%);
+    background: #7cc4ff;
+    box-shadow: 0 0 14px rgba(79, 216, 255, .8);
+    animation: click 2.4s ease-in-out infinite;
+  }
+  @keyframes click {
+    0%, 35%, 100% { transform: translate(-50%, 0); opacity: .9; }
+    45%, 55% { transform: translate(-50%, 4px); opacity: .55; }
+  }
+  .mouse-lines { position: absolute; inset: 0; pointer-events: none; }
+  .mouse-lines span {
+    position: absolute;
+    color: #6e86ad;
+    font-size: 9px;
+    letter-spacing: .08em;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: rgba(12, 21, 38, .8);
+    border: 1px solid rgba(111, 147, 228, .14);
+  }
+  .mouse-lines span:nth-child(1) { left: 8%; top: 28%; }
+  .mouse-lines span:nth-child(2) { right: 8%; top: 22%; }
+  .mouse-lines span:nth-child(3) { left: 10%; bottom: 18%; }
+  .mouse-lines span:nth-child(4) { right: 8%; bottom: 14%; }
+
+  .mouse-copy { color: #91a2c2; font-size: 12px; line-height: 1.8; }
+  .mouse-copy strong { color: #d7e5ff; font-weight: 600; }
+
+  /* ---------------- Footer ---------------- */
+  .footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 100px;
+    padding: 44px 0 52px;
+    border-top: 1px solid rgba(112, 149, 232, .1);
+    background: linear-gradient(to bottom, transparent, rgba(5, 9, 17, .84));
+  }
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 12px; color: #8fa1c1; font-size: 12px; }
+  .footer-brand .brand-mark { width: 26px; height: 26px; font-size: 14px; }
+  .footer-meta { color: #5f7191; font-size: 11px; letter-spacing: .04em; line-height: 1.8; text-align: right; }
+  .back-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #8da6d2;
+    text-decoration: none;
+    font-size: 11px;
+    padding: 9px 13px;
+    border: 1px solid rgba(121, 157, 236, .18);
+    border-radius: 999px;
+    transition: all .25s ease;
+  }
+  .back-top:hover { color: #dfeaff; border-color: rgba(121, 157, 236, .5); transform: translateY(-2px); }
+
+  /* ---------------- Reveal ---------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity .8s cubic-bezier(.2, .8, .2, 1), transform .8s cubic-bezier(.2, .8, .2, 1);
+  }
+  .reveal.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 960px) {
+    .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .shortcut-layout { grid-template-columns: 1fr; }
+    .section-head { grid-template-columns: 1fr; }
+    .section-head p { max-width: 560px; }
+    .chip.c5, .chip.c6 { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .wrap { width: min(100% - 28px, 1180px); }
+    .nav { padding: 14px 16px; }
+    .nav-pill { font-size: 9px; padding: 6px 9px; }
+    .brand { font-size: 13px; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .card { min-height: 0; }
+    .hero { min-height: 92svh; padding-top: 96px; }
+    .hero h1 { font-size: clamp(46px, 15vw, 72px); }
+    .hero p { font-size: 12px; }
+    .chips { display: none; }
+    .chip { font-size: 9px; padding: 6px 9px; }
+    .chip.c1 { top: 13%; left: 1%; }
+    .chip.c3 { top: 12%; right: 1%; }
+    .chip.c2 { top: 74%; left: 0; }
+    .chip.c4 { top: 75%; right: 0; }
+    .shortcut-panel { padding: 18px; }
+    .shortcut span.label { font-size: 11px; }
+    kbd { min-width: 23px; min-height: 23px; padding: 0 6px; font-size: 9px; }
+    .footer-inner { align-items: flex-start; }
+    .footer-meta { text-align: left; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: .001ms !important;
+    }
+    .card, .shortcut, .reveal { opacity: 1; transform: none; }
+    #stars { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="orb one"></div>
+<div class="orb two"></div>
+<div class="orb three"></div>
+<div class="progress" id="progress"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-tabs" viewBox="0 0 24 24"><path d="M4 8.5h7l2-2h5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9Z"/><path d="M4 10h16"/></symbol>
+    <symbol id="i-vertical" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M9 5v14"/><path d="M6 8h1M6 11h1"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.2 15.2 20 20"/><path d="M8 10.5h5M10.5 8v5"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m4 11 8-7 8 7"/><path d="M6.5 9.8V20h11V9.8"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4.5h10a1 1 0 0 1 1 1V21l-6-4-6 4V5.5a1 1 0 0 1 1-1Z"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h9"/><circle cx="18" cy="18" r="1.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-zoom" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.2 15.2 20 20M8 10.5h5M10.5 8v5"/><path d="M18.5 4.5h2v2M21.5 4.5l-2.4 2.4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v10"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></symbol>
+    <symbol id="i-devtools" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 15.1A8.5 8.5 0 0 1 8.9 4a8.5 8.5 0 1 0 11.1 11.1Z"/></symbol>
+    <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7" ry="3"/><path d="M5 5.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/><path d="M5 11.5v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></symbol>
+    <symbol id="i-incognito" viewBox="0 0 24 24"><path d="M4 11h16"/><path d="m7 11 1.5-5h7L17 11"/><circle cx="7.5" cy="15.5" r="2.2"/><circle cx="16.5" cy="15.5" r="2.2"/><path d="M9.7 15.5h4.6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.5c0 4.3-2.9 7.4-7 9-4.1-1.6-7-4.7-7-9V6l7-2.5Z"/><path d="m8.8 12 2.1 2.1 4.4-4.4"/></symbol>
+    <symbol id="i-game" viewBox="0 0 24 24"><path d="M8 8h8l2.2 9.5a2 2 0 0 1-3.5 1.6L13 17h-2l-1.7 2.1a2 2 0 0 1-3.5-1.6L8 8Z"/><path d="M8 11v4M6 13h4"/><circle cx="16" cy="13" r="1" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6.5 3h7l5 5v12.5A1.5 1.5 0 0 1 17 22H6.5A1.5 1.5 0 0 1 5 20.5v-16A1.5 1.5 0 0 1 6.5 3Z"/><path d="M13.5 3v4.5a1 1 0 0 0 1 1H18"/><path d="M8.5 13h7M8.5 16h5"/></symbol>
+    <symbol id="i-package" viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v9"/><path d="m8 5.2 8 4.6"/></symbol>
+    <symbol id="i-window" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 8.5h17"/><path d="M6 6.5h.01M8 6.5h.01M10 6.5h.01"/></symbol>
+    <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M6 9h.01M9 9h.01M12 9h.01M15 9h.01M18 9h.01M6 12h.01M9 12h.01M12 12h.01M15 12h.01M18 12h.01M7 15h10"/></symbol>
+  </defs>
+</svg>
+
+<nav class="nav">
+  <div class="brand">
+    <div class="brand-mark">L</div>
+    <span>LiteBrowser</span>
+  </div>
+  <div class="nav-pill">FEATURES · SHORTCUTS</div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-chips" aria-hidden="true">
+        <span class="chip c1"><i></i> 多标签</span>
+        <span class="chip c2"><i></i> 深色主题</span>
+        <span class="chip c3"><i></i> 无痕窗口</span>
+        <span class="chip c4"><i></i> 自绘菜单</span>
+        <span class="chip c5"><i></i> 下载中心</span>
+        <span class="chip c6"><i></i> 离线 2048</span>
+      </div>
+
+      <div class="logo-stage" aria-hidden="true">
+        <div class="logo-glow"></div>
+        <div class="logo-ring"></div>
+        <div class="logo-ring r2"></div>
+        <span class="orbit-dot a"></span>
+        <span class="orbit-dot b"></span>
+        <div class="logo-core">L</div>
+      </div>
+
+      <h1>LiteBrowser<span>ALL FEATURES · ALL SHORTCUTS</span></h1>
+      <p>轻量、快速、不打扰。一台真正属于你的桌面浏览器，从标签页、下载、无痕窗口到安装体验，全部重新打磨。</p>
+
+      <div class="hero-actions">
+        <a class="btn primary" href="#features">浏览全部功能 <span>↓</span></a>
+        <a class="btn" href="#shortcuts">查看快捷键 <span>⌘</span></a>
+      </div>
+
+      <div class="hero-stats">
+        <div><strong>18</strong>项核心功能</div>
+        <div><strong>20+</strong>组快捷键</div>
+        <div><strong>2.3.14</strong>当前版本</div>
+      </div>
+
+      <div class="scroll-cue"><span class="mouse"></span><span>SCROLL</span></div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span class="ticker-item"><b>多标签</b> 拖拽排序</span>
+      <span class="ticker-item"><b>垂直标签页</b> 侧边布局</span>
+      <span class="ticker-item"><b>无痕窗口</b> DuckDuckGo</span>
+      <span class="ticker-item"><b>自绘菜单</b> 键盘热键</span>
+      <span class="ticker-item"><b>下载中心</b> Windows 文件图标</span>
+      <span class="ticker-item"><b>深色 / 浅色</b> 跟随系统</span>
+      <span class="ticker-item"><b>标签历史</b> 重启恢复</span>
+      <span class="ticker-item"><b>2048</b> 完全离线</span>
+      <span class="ticker-item"><b>HTML 关联</b> 双击打开</span>
+      <span class="ticker-item"><b>NSIS</b> 安装详情</span>
+      <span class="ticker-item"><b>多标签</b> 拖拽排序</span>
+      <span class="ticker-item"><b>垂直标签页</b> 侧边布局</span>
+      <span class="ticker-item"><b>无痕窗口</b> DuckDuckGo</span>
+      <span class="ticker-item"><b>自绘菜单</b> 键盘热键</span>
+      <span class="ticker-item"><b>下载中心</b> Windows 文件图标</span>
+      <span class="ticker-item"><b>深色 / 浅色</b> 跟随系统</span>
+      <span class="ticker-item"><b>标签历史</b> 重启恢复</span>
+      <span class="ticker-item"><b>2048</b> 完全离线</span>
+      <span class="ticker-item"><b>HTML 关联</b> 双击打开</span>
+      <span class="ticker-item"><b>NSIS</b> 安装详情</span>
+    </div>
+  </div>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">01 / FEATURES</div>
+          <h2>把每个细节<br>做成体验。</h2>
+        </div>
+        <p>从窗口外壳到网页进程，从快捷菜单到安装向导，LiteBrowser 的每一个部分都经过重新设计。</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="card" style="transition-delay:.02s">
+          <div class="icon-box"><svg class="icon"><use href="#i-tabs"/></svg></div>
+          <h3>多标签浏览</h3>
+          <p>标签栏高度固定，标签越多宽度自动压缩；支持拖拽排序、双击 / 中键关闭、恢复关闭的标签页，切换带顺滑动画。</p>
+          <div class="tags"><span class="tag">拖拽排序</span><span class="tag">双击关闭</span><span class="tag">恢复标签</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.06s">
+          <div class="icon-box"><svg class="icon"><use href="#i-vertical"/></svg></div>
+          <h3>垂直标签页</h3>
+          <p>在设置中一键切换为左侧垂直标签栏，页面区域自动让出空间；垂直模式下依然可以拖拽排序。默认关闭。</p>
+          <div class="tags"><span class="tag">默认关闭</span><span class="tag">页面自动适配</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.1s">
+          <div class="icon-box"><svg class="icon"><use href="#i-search"/></svg></div>
+          <h3>智能地址栏</h3>
+          <p>识别完整 URL、域名、localhost 与 IP；其余内容交给 Bing、Google、DuckDuckGo 或百度搜索；新标签页不会携带上一页链接。</p>
+          <div class="tags"><span class="tag">四种搜索引擎</span><span class="tag">空白起始页</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.14s">
+          <div class="icon-box"><svg class="icon"><use href="#i-home"/></svg></div>
+          <h3>起始页与历史</h3>
+          <p>品牌标志、搜索框和最近历史；历史记录显示网站图标，支持右键删除单条、一键清空。起始页不再放 2048 快捷入口。</p>
+          <div class="tags"><span class="tag">favicon</span><span class="tag">右键删除</span><span class="tag">一键清空</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.18s">
+          <div class="icon-box"><svg class="icon"><use href="#i-bookmark"/></svg></div>
+          <h3>书签</h3>
+          <p>地址栏星标收藏，书签栏显示网站真实图标；右键书签可以打开、新标签页打开、复制链接或删除。</p>
+          <div class="tags"><span class="tag">书签栏</span><span class="tag">网站图标</span><span class="tag">右键菜单</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.22s">
+          <div class="icon-box"><svg class="icon"><use href="#i-menu"/></svg></div>
+          <h3>自绘右键菜单</h3>
+          <p>网页、书签、标签页、历史和下载项统一使用应用内浮层菜单；显示对应快捷键，可用方向键选择、回车执行、Esc 关闭。</p>
+          <div class="tags"><span class="tag">Ctrl+C</span><span class="tag">Del</span><span class="tag">F12</span><span class="tag">键盘导航</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.26s">
+          <div class="icon-box"><svg class="icon"><use href="#i-zoom"/></svg></div>
+          <h3>查找与缩放</h3>
+          <p>页面内查找实时显示匹配数，回车 / Shift+回车跳转；支持 50%–300% 页面缩放，工具栏直接显示当前比例。</p>
+          <div class="tags"><span class="tag">实时匹配</span><span class="tag">50%–300%</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.3s">
+          <div class="icon-box"><svg class="icon"><use href="#i-download"/></svg></div>
+          <h3>下载中心</h3>
+          <p>显示 Windows 给文件分配的真实图标、深蓝色进度条和实时速度；支持暂停 / 继续、自定义下载目录，下载中不会误打开文件。</p>
+          <div class="tags"><span class="tag">暂停 / 继续</span><span class="tag">文件图标</span><span class="tag">右键菜单</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.34s">
+          <div class="icon-box"><svg class="icon"><use href="#i-devtools"/></svg></div>
+          <h3>内嵌开发者工具</h3>
+          <p>F12 在窗口右侧停靠显示 DevTools，不再弹出独立窗口；每个标签页独立保留，关闭后页面自动恢复全宽。</p>
+          <div class="tags"><span class="tag">右侧停靠</span><span class="tag">按标签保留</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.38s">
+          <div class="icon-box"><svg class="icon"><use href="#i-moon"/></svg></div>
+          <h3>主题系统</h3>
+          <p>浅色、深色、跟随系统三种模式，默认跟随系统；切换时同步 prefers-color-scheme，让网站也跟着变色。</p>
+          <div class="tags"><span class="tag">浅色</span><span class="tag">深色</span><span class="tag">跟随系统</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.42s">
+          <div class="icon-box"><svg class="icon"><use href="#i-db"/></svg></div>
+          <h3>持久化</h3>
+          <p>保存标签页及其前进 / 后退历史、书签、浏览记录、窗口状态、Cookie 和缓存；重启恢复，覆盖安装也不丢数据。</p>
+          <div class="tags"><span class="tag">标签历史</span><span class="tag">Cookie</span><span class="tag">覆盖安装保留</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.46s">
+          <div class="icon-box"><svg class="icon"><use href="#i-incognito"/></svg></div>
+          <h3>无痕窗口</h3>
+          <p>Ctrl+Shift+N 打开独立无痕窗口，使用临时内存分区，不写入历史、书签或标签页会话；默认搜索引擎为 DuckDuckGo。</p>
+          <div class="tags"><span class="tag">独立内存分区</span><span class="tag">DuckDuckGo</span><span class="tag">自动清理</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.5s">
+          <div class="icon-box"><svg class="icon"><use href="#i-shield"/></svg></div>
+          <h3>隐私清理</h3>
+          <p>设置中提供「清空 Cookie 和浏览记录」，确认后清理 Cookie、LocalStorage、IndexedDB、Service Worker、缓存和历史记录；书签与下载不受影响。</p>
+          <div class="tags"><span class="tag">Cookie</span><span class="tag">缓存</span><span class="tag">浏览记录</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.54s">
+          <div class="icon-box"><svg class="icon"><use href="#i-game"/></svg></div>
+          <h3>2048 小游戏</h3>
+          <p>完全离线的 2048，支持方向键 / WASD、分数和新游戏；从菜单「2048 小游戏」打开，起始页不再显示快捷按钮。</p>
+          <div class="tags"><span class="tag">完全离线</span><span class="tag">WASD</span><span class="tag">菜单入口</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.58s">
+          <div class="icon-box"><svg class="icon"><use href="#i-file"/></svg></div>
+          <h3>HTML 文件关联</h3>
+          <p>安装时注册 .html / .htm 文件关联；双击文件通过 file:// 启动，已运行时则通过 second-instance 唤起，并直接作为新标签页打开。</p>
+          <div class="tags"><span class="tag">.html / .htm</span><span class="tag">双击打开</span><span class="tag">新标签页</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.62s">
+          <div class="icon-box"><svg class="icon"><use href="#i-shield"/></svg></div>
+          <h3>安全隔离</h3>
+          <p>页面启用 sandbox 和 contextIsolation，禁用 nodeIntegration，并施加自定义 CSP；摄像头、麦克风、定位、通知等敏感权限默认拒绝。</p>
+          <div class="tags"><span class="tag">sandbox</span><span class="tag">CSP</span><span class="tag">权限默认拒绝</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.66s">
+          <div class="icon-box"><svg class="icon"><use href="#i-package"/></svg></div>
+          <h3>安装与卸载</h3>
+          <p>安装向导显示 EULA 协议页；安装和卸载过程显示详细进度与文件列表；卸载时询问是否保留个人数据，选「否」才清理 AppData。</p>
+          <div class="tags"><span class="tag">EULA</span><span class="tag">安装详情</span><span class="tag">保留数据询问</span></div>
+        </article>
+
+        <article class="card" style="transition-delay:.7s">
+          <div class="icon-box"><svg class="icon"><use href="#i-window"/></svg></div>
+          <h3>无边框窗口</h3>
+          <p>自绘最小化 / 最大化 / 关闭按钮，关闭按钮悬停为红色；拖动标题栏移动窗口，双击最大化，F11 进入全屏。</p>
+          <div class="tags"><span class="tag">自绘窗口</span><span class="tag">红色关闭</span><span class="tag">F11</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="shortcuts">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">02 / SHORTCUTS</div>
+          <h2>手不离键盘。</h2>
+        </div>
+        <p>常用操作全部保留快捷键。打开菜单后也可以用方向键选择、回车执行，或直接按菜单中标注的组合键。</p>
+      </div>
+
+      <div class="shortcut-layout">
+        <div class="shortcut-panel reveal">
+          <div class="shortcut-title"><h3>标签页与窗口</h3><span>TABS &amp; WINDOWS</span></div>
+          <div class="shortcut-list">
+            <div class="shortcut"><span class="label">新建标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>T</kbd></span></div>
+            <div class="shortcut"><span class="label">关闭当前标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>W</kbd></span></div>
+            <div class="shortcut"><span class="label">恢复关闭的标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>T</kbd></span></div>
+            <div class="shortcut"><span class="label">切换标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Tab</kbd><span class="plus">/</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>Tab</kbd></span></div>
+            <div class="shortcut"><span class="label">跳到第 N 个标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>1</kbd><span class="plus">…</span><kbd>8</kbd></span></div>
+            <div class="shortcut"><span class="label">跳到最后一个标签页</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>9</kbd></span></div>
+            <div class="shortcut"><span class="label">新建无痕窗口</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>N</kbd></span></div>
+            <div class="shortcut"><span class="label">全屏</span><span class="keys"><kbd>F11</kbd></span></div>
+          </div>
+        </div>
+
+        <div class="shortcut-panel reveal">
+          <div class="shortcut-title"><h3>导航与页面</h3><span>NAVIGATION</span></div>
+          <div class="shortcut-list">
+            <div class="shortcut"><span class="label">聚焦地址栏</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>L</kbd><span class="plus">/</span><kbd>F6</kbd></span></div>
+            <div class="shortcut"><span class="label">重新加载</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>R</kbd><span class="plus">/</span><kbd>F5</kbd></span></div>
+            <div class="shortcut"><span class="label">忽略缓存重新加载</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>R</kbd></span></div>
+            <div class="shortcut"><span class="label">后退 / 前进</span><span class="keys"><kbd>Alt</kbd><span class="plus">+</span><kbd>←</kbd><span class="plus">/</span><kbd>Alt</kbd><span class="plus">+</span><kbd>→</kbd></span></div>
+            <div class="shortcut"><span class="label">回到主页</span><span class="keys"><kbd>Alt</kbd><span class="plus">+</span><kbd>Home</kbd></span></div>
+            <div class="shortcut"><span class="label">页面内查找</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>F</kbd></span></div>
+            <div class="shortcut"><span class="label">收藏 / 取消收藏</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>D</kbd></span></div>
+            <div class="shortcut"><span class="label">显示 / 隐藏书签栏</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>B</kbd></span></div>
+            <div class="shortcut"><span class="label">放大 / 缩小 / 还原</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>=</kbd><span class="plus">/</span><kbd>-</kbd><span class="plus">/</span><kbd>0</kbd></span></div>
+            <div class="shortcut"><span class="label">内嵌开发者工具</span><span class="keys"><kbd>F12</kbd><span class="plus">/</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>I</kbd></span></div>
+            <div class="shortcut"><span class="label">停止加载 / 关闭查找 / 菜单 / 全屏</span><span class="keys"><kbd>Esc</kbd></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="shortcut-layout" style="margin-top:14px">
+        <div class="shortcut-panel reveal mouse-panel">
+          <div class="shortcut-title"><h3>鼠标操作</h3><span>MOUSE</span></div>
+          <div class="mouse-visual" aria-hidden="true">
+            <div class="mouse-body"></div>
+            <div class="mouse-lines"><span>拖动：排序标签</span><span>中键：关闭标签</span><span>双击：关闭标签</span><span>右键：打开菜单</span></div>
+          </div>
+          <p class="mouse-copy"><strong>拖动标签</strong>调整顺序 · <strong>中键 / 双击</strong>关闭标签 · <strong>右键</strong>网页、书签、标签页、历史或下载项打开自绘菜单。</p>
+        </div>
+
+        <div class="shortcut-panel reveal">
+          <div class="shortcut-title"><h3>菜单内键盘</h3><span>IN MENUS</span></div>
+          <div class="shortcut-list">
+            <div class="shortcut"><span class="label">上下选择菜单项</span><span class="keys"><kbd>↑</kbd><span class="plus">/</span><kbd>↓</kbd></span></div>
+            <div class="shortcut"><span class="label">执行选中项</span><span class="keys"><kbd>Enter</kbd><span class="plus">/</span><kbd>Space</kbd></span></div>
+            <div class="shortcut"><span class="label">关闭菜单</span><span class="keys"><kbd>Esc</kbd></span></div>
+            <div class="shortcut"><span class="label">直接触发菜单快捷键</span><span class="keys"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd><span class="plus">/</span><kbd>Del</kbd><span class="plus">/</span><kbd>F12</kbd></span></div>
+          </div>
+          <div class="shortcut-title" style="margin-top:20px"><h3>设置里可切换</h3><span>SETTINGS</span></div>
+          <div class="shortcut-list">
+            <div class="shortcut"><span class="label">垂直标签页</span><span class="keys"><kbd>默认关</kbd></span></div>
+            <div class="shortcut"><span class="label">启动时恢复上次标签页</span><span class="keys"><kbd>默认开</kbd></span></div>
+            <div class="shortcut"><span class="label">清空 Cookie 和浏览记录</span><span class="keys"><kbd>设置</kbd></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <div class="brand-mark">L</div>
+        <div>
+          <div style="color:#dbe7ff;font-weight:600;margin-bottom:4px">LiteBrowser 2.3.14</div>
+          <div>轻量 · 快速 · 不打扰</div>
+        </div>
+      </div>
+      <div class="footer-meta">
+        Electron 42.5.0 · Chromium 148<br>
+        多标签 · 无痕 · 下载 · 自定义菜单 · 离线 2048
+      </div>
+      <a class="back-top" href="#" aria-label="回到顶部">↑ 回到顶部</a>
+    </div>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // 顶部滚动进度
+  const progress = document.getElementById('progress');
+  const updateProgress = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max <= 0 ? 0 : Math.min(1, Math.max(0, window.scrollY / max));
+    progress.style.width = `${p * 100}%`;
+  };
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // 滚动进入动画
+  const revealTargets = [...document.querySelectorAll('.reveal')];
+  document.querySelectorAll('.card').forEach((card, index) => {
+    card.style.transitionDelay = `${Math.min(index * 35, 420)}ms`;
+    revealTargets.push(card);
+  });
+  document.querySelectorAll('.shortcut').forEach((item, index) => {
+    item.style.transitionDelay = `${Math.min(index * 22, 240)}ms`;
+    revealTargets.push(item);
+  });
+
+  if ('IntersectionObserver' in window && !reduceMotion) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealTargets.forEach((target) => observer.observe(target));
+  } else {
+    revealTargets.forEach((target) => target.classList.add('show'));
+  }
+
+  // 轻量星尘背景
+  const canvas = document.getElementById('stars');
+  if (!canvas || reduceMotion) return;
+  const ctx = canvas.getContext('2d');
+  let width = 0, height = 0, dpr = 1;
+  const points = [];
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.min(96, Math.max(38, Math.round(width * height / 19000)));
+    points.length = 0;
+    for (let i = 0; i < count; i += 1) {
+      points.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.4 + .35,
+        speed: Math.random() * .22 + .05,
+        alpha: Math.random() * .46 + .12,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw(time) {
+    ctx.clearRect(0, 0, width, height);
+    pointer.x += (pointer.tx - pointer.x) * .04;
+    pointer.y += (pointer.ty - pointer.y) * .04;
+
+    for (const p of points) {
+      p.y -= p.speed;
+      p.phase += .004;
+      if (p.y < -8) { p.y = height + 8; p.x = Math.random() * width; }
+      const px = p.x + Math.sin(p.phase) * 8 + pointer.x * 10;
+      const py = p.y + pointer.y * 6;
+      ctx.beginPath();
+      ctx.arc(px, py, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(134, 174, 255, ${p.alpha})`;
+      ctx.fill();
+    }
+
+    for (let i = 0; i < points.length; i += 1) {
+      for (let j = i + 1; j < points.length; j += 1) {
+        const a = points[i];
+        const b = points[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 105) {
+          ctx.beginPath();
+          ctx.moveTo(a.x + pointer.x * 10, a.y + pointer.y * 6);
+          ctx.lineTo(b.x + pointer.x * 10, b.y + pointer.y * 6);
+          ctx.strokeStyle = `rgba(102, 146, 255, ${(1 - dist / 105) * .11})`;
+          ctx.lineWidth = .6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  window.addEventListener('pointermove', (event) => {
+    pointer.tx = (event.clientX / width - .5) * 2;
+    pointer.ty = (event.clientY / height - .5) * 2;
+  }, { passive: true });
+
+  resize();
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: file: https: http:; font-src 'self'; base-uri 'none'; object-src 'none'"
+    />
+    <title>LiteBrowser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header id="chrome">
+        <div id="tabstrip">
+          <div id="tabs" role="tablist" aria-label="标签页"></div>
+          <button id="new-tab" class="icon-btn strip-btn" type="button" title="新建标签页 (Ctrl+T)" aria-label="新建标签页">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
+          <div id="titlebar-space"></div>
+          <div id="window-controls">
+            <button class="win-btn" type="button" data-window="minimize" title="最小化" aria-label="最小化">
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8" /></svg>
+            </button>
+            <button class="win-btn" type="button" data-window="maximize" title="最大化" aria-label="最大化">
+              <svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.2" y="2.2" width="7.6" height="7.6" rx="1" /></svg>
+            </button>
+            <button class="win-btn close" type="button" data-window="close" title="关闭" aria-label="关闭">
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.6 2.6l6.8 6.8M9.4 2.6L2.6 9.4" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="chrome-main">
+          <div id="toolbar">
+          <div class="nav-buttons">
+            <button id="btn-back" class="icon-btn" type="button" title="后退 (Alt+←)" aria-label="后退" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+            </button>
+            <button id="btn-forward" class="icon-btn" type="button" title="前进 (Alt+→)" aria-label="前进" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+            </button>
+            <button id="btn-reload" class="icon-btn" type="button" title="重新加载 (Ctrl+R)" aria-label="重新加载">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3" /><path d="M19.5 4.5v4.2h-4.2" /></svg>
+            </button>
+            <button id="btn-home" class="icon-btn" type="button" title="主页 (Alt+Home)" aria-label="主页">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.2L12 4.5l8 6.7" /><path d="M6.3 10v9.3h11.4V10" /></svg>
+            </button>
+          </div>
+
+          <form id="omnibox" autocomplete="off">
+            <span id="security" class="security" aria-hidden="true"></span>
+            <input id="url-input" type="text" spellcheck="false" autocomplete="off" placeholder="搜索或输入网址" aria-label="地址栏" />
+            <button id="btn-zoom" class="zoom-pill" type="button" title="重置缩放">100%</button>
+            <button id="btn-star" class="icon-btn star" type="button" title="收藏此页 (Ctrl+D)" aria-label="收藏此页">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.7l2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.73-5.2 2.73 1-5.8-4.2-4.1 5.8-.85z" /></svg>
+            </button>
+          </form>
+
+          <div class="tool-buttons">
+            <span id="incognito-badge" class="incognito-badge hidden">无痕</span>
+            <button id="btn-downloads" class="icon-btn dl-button has-badge hidden" type="button" title="下载内容" aria-label="下载内容">
+              <svg class="dl-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10" /><path d="M7.5 10.5L12 15l4.5-4.5" /><path d="M4.5 19.5h15" /></svg>
+              <svg class="dl-ring" viewBox="0 0 32 32" aria-hidden="true">
+                <circle class="dl-ring-track" cx="16" cy="16" r="14" />
+                <circle class="dl-ring-progress" cx="16" cy="16" r="14" />
+              </svg>
+              <span id="download-badge" class="badge"></span>
+            </button>
+            <button id="btn-menu" class="icon-btn" type="button" title="菜单" aria-label="菜单">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" /><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none" /></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="bookmarks-bar" class="hidden"></div>
+
+        <div id="findbar" class="hidden">
+          <span class="find-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l4.5 4.5" /></svg>
+          </span>
+          <input id="find-input" type="text" placeholder="在页面中查找" spellcheck="false" aria-label="在页面中查找" />
+          <span id="find-count">0/0</span>
+          <button id="find-prev" class="icon-btn small" type="button" title="上一个 (Shift+Enter)" aria-label="上一个">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6" /></svg>
+          </button>
+          <button id="find-next" class="icon-btn small" type="button" title="下一个 (Enter)" aria-label="下一个">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10l6 6 6-6" /></svg>
+          </button>
+          <button id="find-close" class="icon-btn small" type="button" title="关闭 (Esc)" aria-label="关闭查找">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </div>
+
+        <div id="errorbar" class="hidden">
+          <span class="error-icon" aria-hidden="true">!</span>
+          <span id="error-text"></span>
+          <button id="error-retry" type="button">重试</button>
+          <button id="error-dismiss" class="icon-btn small" type="button" title="关闭提示" aria-label="关闭提示">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </div>
+
+        <div id="progress" class="hidden"><div class="progress-bar"></div></div>
+        </div>
+      </header>
+
+      <main id="newtab" class="hidden">
+        <div class="nt-wrap">
+          <div class="nt-head">
+            <img class="nt-logo" src="assets/logo.svg" alt="LiteBrowser" draggable="false" />
+            <div class="nt-heading">
+              <h1>LiteBrowser</h1>
+              <p class="nt-tagline">轻量 · 快速 · 不打扰</p>
+            </div>
+          </div>
+
+          <form id="nt-search" class="nt-search" autocomplete="off">
+            <span class="nt-search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l4.5 4.5" /></svg>
+            </span>
+            <input id="nt-input" type="text" placeholder="搜索或输入网址" spellcheck="false" autocomplete="off" aria-label="搜索或输入网址" />
+            <button type="submit">搜索</button>
+          </form>
+
+          <section id="nt-recent-section" class="nt-section hidden">
+            <div class="nt-section-head">
+              <h2>历史记录</h2>
+              <button id="clear-history" class="history-clear" type="button">清空历史</button>
+            </div>
+            <div id="nt-recent" class="nt-recent"></div>
+          </section>
+
+          <footer class="nt-footer">
+            <span>LiteBrowser <b id="nt-version">2.3.0</b></span>
+            <span class="dot">·</span>
+            <span id="nt-engine">Bing</span>
+            <span class="dot">·</span>
+            <span>Chromium <span id="nt-chrome">—</span></span>
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
