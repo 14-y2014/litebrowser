@@ -55,19 +55,34 @@ LiteBrowser 是一个基于 **Electron** 的轻量多标签浏览器。窗口外
 - **安全**：页面启用 `sandbox` + `contextIsolation`，禁用 `nodeIntegration`，自定义 CSP；摄像头、麦克风、定位、通知等敏感权限默认拒绝；只允许 `http(s)` / `file` 协议导航。
 
 ## 运行
+- **用户使用**：
 
-环境：Windows 10/11、Node.js ≥ 22.12。`node_modules` 里的 Electron 已安装好；如果重新安装依赖时 Electron 二进制下载失败，可指定镜像：
+    环境：Windows 10/11 ，下载链接(密码均为lite)：
 
-```powershell
-$env:ELECTRON_MIRROR = "https://npmmirror.com/mirrors/electron/"
-npm install
-```
+    **Installer** 
+    ```
+    https://cmdplayer.lanzouq.com/iUxaB4fjuati
+    ```
 
-启动：
+    **Portable** 
+    ```
+    https://cmdplayer.lanzouq.com/i6Gly4fju8ah
+    ```
 
-```powershell
-npm start
-```
+- **测试环境**：
+
+    环境：Windows 10/11、Node.js ≥ 22.12。`node_modules` 里的 Electron 已安装好；如果重新安装依赖时 Electron 二进制下载失败，可指定镜像：
+
+    ```powershell
+    $env:ELECTRON_MIRROR = "https://npmmirror.com/mirrors/electron/"
+    npm install
+    ```
+
+    启动：
+
+    ```powershell
+    npm start
+    ```
 
 ## 快捷键
 
