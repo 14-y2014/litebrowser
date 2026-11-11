@@ -1,0 +1,73 @@
+{
+  "name": "litebrowser",
+  "productName": "LiteBrowser",
+  "version": "2.3.14",
+  "description": "LiteBrowser — 基于 Electron 的轻量多标签浏览器",
+  "main": "src/main/main.js",
+  "author": "LiteBrowser",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "smoke": "node scripts/smoke.js",
+    "postinstall": "node scripts/patch-nsis.js",
+    "dist": "node scripts/patch-nsis.js && electron-builder",
+    "dist:dir": "node scripts/patch-nsis.js && electron-builder --dir"
+  },
+  "build": {
+    "appId": "com.litebrowser.fresh.20261109",
+    "electronLanguages": [
+      "zh-CN",
+      "en-US"
+    ],
+    "productName": "LiteBrowser",
+    "compression": "maximum",
+    "fileAssociations": [
+      {
+        "ext": [
+          "html",
+          "htm"
+        ],
+        "name": "LiteBrowserHTML",
+        "description": "HTML 文档"
+      }
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "FAVICON.ico"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "license": "EULA.txt",
+      "include": "installer.nsh",
+      "shortcutName": "LiteBrowser"
+    }
+  },
+  "devDependencies": {
+    "electron": "^42.5.0",
+    "electron-builder": "^26.18.0"
+  }
+}
